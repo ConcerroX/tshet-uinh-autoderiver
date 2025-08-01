@@ -1,58 +1,58 @@
+// noinspection NonAsciiCharacters,JSNonASCIINames
+
 import { Fragment } from "react";
 
 import { 資料, 音韻地位 } from "tshet-uinh";
 import Yitizi from "yitizi";
 
-import styled from "@emotion/styled";
-
 import CustomElement from "./Classes/CustomElement";
 import Ruby from "./Components/Ruby";
-import Table from "./Components/Table";
 import TooltipChar from "./Components/TooltipChar";
 import { noop } from "./consts";
+import { ADDITIONS } from "./modification";
 
 import type { CustomNode } from "./Classes/CustomElement";
-import type { Entry, MainState, Option, SchemaState, ReactNode } from "./consts";
+import type { Entry, MainState, Option, ReactNode } from "./consts";
 
-const Title = styled.h3`
-  padding: 0 0 1rem 0.25rem;
-`;
 
-const 所有地位 = Array.from(資料.iter音韻地位());
+// const Title = styled.h3`
+//   padding: 0 0 1rem 0.25rem;
+// `;
+
+// const 所有地位 = Array.from(資料.iter音韻地位());
 type Deriver = (音韻地位: 音韻地位, 字頭?: string | null) => CustomNode[];
 type Handler = (state: MainState, callDeriver: Deriver) => ReactNode;
 
-function title(schemas: SchemaState[]) {
-  return schemas.map(({ name }) => name);
-}
+// function title(schemas: SchemaState[]) {
+//   return schemas.map(({ name }) => name);
+// }
 
-function serialize(callDeriver: Deriver): [string, CustomNode[]][] {
-  return 所有地位.map(音韻地位 => callDeriver(音韻地位)).map(擬音陣列 => [CustomElement.stringify(擬音陣列), 擬音陣列]);
-}
+// function serialize(callDeriver: Deriver): [string, CustomNode[]][] {
+//   return 所有地位.map(音韻地位 => callDeriver(音韻地位)).map(擬音陣列 => [CustomElement.stringify(擬音陣列), 擬音陣列]);
+// }
+//
+// function iterate(callDeriver: Deriver) {
+//   return 所有地位.map(音韻地位 => {
+//     const 各條目 = 資料.query音韻地位(音韻地位);
+//     const 代表字 = 各條目.find(({ 來源 }) => 來源?.文獻 === "廣韻")?.字頭 ?? 各條目[0]?.字頭;
+//     return {
+//       擬音陣列: callDeriver(音韻地位),
+//       代表字,
+//     };
+//   });
+// }
 
-function iterate(callDeriver: Deriver) {
-  return 所有地位.map(音韻地位 => {
-    const 各條目 = 資料.query音韻地位(音韻地位);
-    const 代表字 = 各條目.find(({ 來源 }) => 來源?.文獻 === "廣韻")?.字頭 ?? 各條目[0]?.字頭;
-    return {
-      描述: 音韻地位.描述,
-      擬音陣列: callDeriver(音韻地位),
-      代表字,
-    };
-  });
-}
+// function finalize(result: ReturnType<typeof iterate>) {
+//   return result.map(({ 描述, 擬音陣列, 代表字 }) => [描述, ...wrap(擬音陣列), 代表字 || ""]);
+// }
 
-function finalize(result: ReturnType<typeof iterate>) {
-  return result.map(({ 描述, 擬音陣列, 代表字 }) => [描述, ...wrap(擬音陣列), 代表字 || ""]);
-}
-
-function wrap(擬音陣列: CustomNode[]) {
-  return CustomElement.render(擬音陣列).map((擬音, index) => (
-    <span key={index} lang="och-Latn-fonipa">
-      {擬音}
-    </span>
-  ));
-}
+// function wrap(擬音陣列: CustomNode[]) {
+//   return CustomElement.render(擬音陣列).map((擬音, index) => (
+//     <span key={index} lang="och-Latn-fonipa">
+//       {擬音}
+//     </span>
+//   ));
+// }
 
 let presetArticle = "";
 
@@ -66,6 +66,7 @@ export function setArticle(article: string) {
 
 type ArticleListener = (syncedArticle: string[]) => void;
 let articleListener: ArticleListener = noop;
+
 export function listenArticle(listener: ArticleListener) {
   articleListener = listener;
 }
@@ -76,12 +77,40 @@ export const evaluateOption: Record<Option, Handler> = {
     const result: ReactNode[] = [];
     const chs = Array.from(article);
 
+    const customData = new Map();
+    customData.set("強", [
+      {
+        音韻地位: 音韻地位.from描述("羣開三C陽平"),
+        釋義: "喜爱，与'恶'(wù)相对",
+      },
+    ]);
+
     for (let i = 0; i < chs.length; i++) {
       let pushed = false;
       const ch = chs[i];
       const 所有異體字 = [ch, null].concat(Yitizi.get(ch));
       const entries: Entry[] = [];
       let preselected = -1;
+
+      // 在处理自定义数据的部分添加特殊条目支持
+      if (ADDITIONS.has(ch)) {
+        ADDITIONS.get(ch)?.forEach(customEntry => {
+          const 地位 = 音韻地位.from描述(customEntry[0]);
+          const 擬音 = callDeriver(地位, ch);
+
+          let entry = entries.find(key => CustomElement.isEqual(key.擬音, 擬音));
+          if (!entry) entries.push((entry = { 擬音, 結果: [] }));
+          entry.結果.push({
+            音韻地位: 地位,
+            釋義: customEntry[1],
+            字頭: ch,
+          });
+
+          if (preselected === -1) {
+            preselected = entries.length - 1;
+          }
+        });
+      }
 
       for (const 字頭 of 所有異體字) {
         if (!字頭) {
@@ -112,7 +141,7 @@ export const evaluateOption: Record<Option, Handler> = {
             }
           })();
           if (地位) {
-            preselected = entries.findIndex(({ 結果 }) => 結果.some(({ 音韻地位 }) => 音韻地位.等於(地位)));
+            preselected = entries.findIndex(({ 結果 }) => 結果.some(({ 音韻地位 }) => 音韻地位?.等於(地位)));
             if (preselected === -1) {
               const 擬音 = callDeriver(地位, ch);
               preselected = entries.findIndex(key => CustomElement.isEqual(key.擬音, 擬音));
@@ -167,50 +196,50 @@ export const evaluateOption: Record<Option, Handler> = {
     ));
   },
 
-  exportAllPositions({ schemas }, callDeriver) {
-    return <Table head={["音韻地位", ...title(schemas), "代表字"]} body={finalize(iterate(callDeriver))} />;
-  },
-
-  exportAllSyllables({ schemas }, callDeriver) {
-    return <Table head={title(schemas)} body={Array.from(new Map(serialize(callDeriver)).values()).map(wrap)} />;
-  },
-
-  exportAllSyllablesWithCount({ schemas }, callDeriver) {
-    type Data = [serialized: string, 擬音陣列: CustomNode[], count: number];
-    const result: Data[] = [];
-    serialize(callDeriver)
-      .sort(([a], [b]) => +(a > b) || -(a < b))
-      .reduce<Data | null>((previous, [serialized, 擬音陣列]) => {
-        if (previous && previous[0] === serialized) {
-          previous[2]++;
-          return previous;
-        }
-        const temp: Data = [serialized, 擬音陣列, 1];
-        result.push(temp);
-        return temp;
-      }, null);
-    return (
-      <Table
-        head={[...title(schemas), "計數"]}
-        body={result.sort((a, b) => b[2] - a[2]).map(([, 擬音陣列, count]) => [...wrap(擬音陣列), count + ""])}
-      />
-    );
-  },
-
-  compareSchemas({ schemas }, callDeriver) {
-    const result = iterate(callDeriver).filter(({ 擬音陣列 }) =>
-      擬音陣列.some(擬音 => !CustomElement.isEqual(擬音, 擬音陣列[0])),
-    );
-    return result.length ? (
-      <>
-        <Title>
-          找到 {result.length} 個相異項目。
-          <span hidden>{"\n\n"}</span>
-        </Title>
-        <Table head={["音韻地位", ...title(schemas), "代表字"]} body={finalize(result)} />
-      </>
-    ) : (
-      <h3>方案推導結果相同。</h3>
-    );
-  },
+  // exportAllPositions({ schemas }, callDeriver) {
+  //   return <Table head={["音韻地位", ...title(schemas), "代表字"]} body={finalize(iterate(callDeriver))} />;
+  // },
+  //
+  // exportAllSyllables({ schemas }, callDeriver) {
+  //   return <Table head={title(schemas)} body={Array.from(new Map(serialize(callDeriver)).values()).map(wrap)} />;
+  // },
+  //
+  // exportAllSyllablesWithCount({ schemas }, callDeriver) {
+  //   type Data = [serialized: string, 擬音陣列: CustomNode[], count: number];
+  //   const result: Data[] = [];
+  //   serialize(callDeriver)
+  //     .sort(([a], [b]) => +(a > b) || -(a < b))
+  //     .reduce<Data | null>((previous, [serialized, 擬音陣列]) => {
+  //       if (previous && previous[0] === serialized) {
+  //         previous[2]++;
+  //         return previous;
+  //       }
+  //       const temp: Data = [serialized, 擬音陣列, 1];
+  //       result.push(temp);
+  //       return temp;
+  //     }, null);
+  //   return (
+  //     <Table
+  //       head={[...title(schemas), "計數"]}
+  //       body={result.sort((a, b) => b[2] - a[2]).map(([, 擬音陣列, count]) => [...wrap(擬音陣列), count + ""])}
+  //     />
+  //   );
+  // },
+  //
+  // compareSchemas({ schemas }, callDeriver) {
+  //   const result = iterate(callDeriver).filter(({ 擬音陣列 }) =>
+  //     擬音陣列.some(擬音 => !CustomElement.isEqual(擬音, 擬音陣列[0])),
+  //   );
+  //   return result.length ? (
+  //     <>
+  //       <Title>
+  //         找到 {result.length} 個相異項目。
+  //         <span hidden>{"\n\n"}</span>
+  //       </Title>
+  //       <Table head={["音韻地位", ...title(schemas), "代表字"]} body={finalize(result)} />
+  //     </>
+  //   ) : (
+  //     <h3>方案推導結果相同。</h3>
+  //   );
+  // },
 };

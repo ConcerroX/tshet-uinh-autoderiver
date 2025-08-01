@@ -1,6 +1,6 @@
 {
   "name": "tshet-uinh-autoderiver",
-  "version": "0.2.0",
+  "version": "0.1.0",
   "description": "An automatic tool to generate derivatives of the Qieyun phonological system",
   "private": true,
   "type": "module",
@@ -36,8 +36,6 @@
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "@monaco-editor/react": "^4.6.0",
-    "monaco-editor": "^0.52.0",
     "purecss": "^3.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

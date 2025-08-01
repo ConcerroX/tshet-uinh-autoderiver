@@ -4,19 +4,17 @@ import { createPortal } from "react-dom";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { faFileCode } from "@fortawesome/free-regular-svg-icons";
-import { faPlus, faRotateLeft, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faRefresh, faRotateLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Editor, { useMonaco } from "@monaco-editor/react";
+// import Editor, { useMonaco } from "@monaco-editor/react";
 
 import CreateSchemaDialog from "./CreateSchemaDialog";
-import Spinner from "./Spinner";
 import actions from "../actions";
 import Swal from "../Classes/SwalReact";
-import { codeFontFamily, invalidCharsRegex, newFileTemplate, noop, tshetUinhExamplesURLPrefix } from "../consts";
+import { invalidCharsRegex, newFileTemplate, noop } from "../consts";
 import "../editor/setup";
 import {
   displaySchemaLoadingErrors,
-  fetchFile,
   memoize,
   normalizeFileName,
   notifyError,
@@ -28,15 +26,15 @@ import type { UseMainState, ReactNode } from "../consts";
 import type { MouseEvent, MutableRefObject } from "react";
 
 const TabBar = styled.div`
-  display: flex;
-  align-items: flex-end;
-  user-select: none;
-  color: #333;
-  background-color: #eaecee;
-  white-space: nowrap;
-  min-height: 2.25rem;
-  padding: 0 0.375rem;
-  overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    user-select: none;
+    color: #333;
+    background-color: #eaecee;
+    white-space: nowrap;
+    min-height: 2.25rem;
+    padding: 6px 0.375rem 0;
+    overflow: hidden;
 `;
 const Tab = styled.div<{ checked: boolean }>`
   display: flex;
@@ -112,39 +110,37 @@ const DeleteButton = styled.button`
   }
 `;
 const Separator = styled.div<{ visible: boolean }>`
-  width: 0.5px;
-  height: 1.375rem;
-  margin-left: 0.5rem;
-  ${({ visible }) =>
-    visible &&
-    css`
+    width: 1px;
+    height: 1.375rem;
+    margin-left: 0.5rem;
+    ${({ visible }) =>
+            visible &&
+            css`
       background-color: #888;
     `}
 `;
-const CreateSchemaButton = styled.button`
-  align-self: center;
-  margin-left: 0.5rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9999px;
-  min-height: 1.75rem;
-  padding: 0 0.375rem;
-  gap: 0.125rem;
-  font-size: 1rem;
-  color: #555;
-  transition: background-color 150ms;
-  &:hover,
-  &:focus {
-    background-color: #ccc;
-  }
-  & > .fa-fw {
-    width: 1em;
-  }
-`;
-const EditorArea = styled.div`
-  position: relative;
-`;
+// const CreateSchemaButton = styled.button`
+//     align-self: center;
+//     margin-left: 0.5rem;
+//     display: inline-flex;
+//     align-items: center;
+//     justify-content: center;
+//     border-radius: 9999px;
+//     min-height: 1.75rem;
+//     padding: 0 0.375rem;
+//     gap: 0.125rem;
+//     font-size: 1rem;
+//     color: #555;
+//     transition: background-color 150ms;
+//
+//     &:hover,
+//     &:focus {
+//         background-color: #ccc;
+//     }
+// `;
+// const EditorArea = styled.div`
+//   position: relative;
+// `;
 const ResetButton = styled.button`
   display: inline-flex;
   margin-left: 1rem;
@@ -186,34 +182,34 @@ const ParameterErrorHint = styled.p`
   font-size: 0.875rem;
   color: red;
 `;
-const Divider = styled.div<{ isDragging: boolean }>`
-  background-color: #c4c6c8;
-  height: 0.2rem;
-  position: relative;
-  cursor: ns-resize;
-  &::after {
-    content: "";
-    position: absolute;
-    top: -0.1rem;
-    bottom: -0.1rem;
-    left: 0;
-    right: 0;
-    background-color: ${({ isDragging }) => (isDragging ? "#0078e7" : "transparent")};
-    transition: background-color 150ms;
-  }
-  &:hover::after,
-  &:focus::after {
-    background-color: #0078e7;
-  }
-`;
-const DividerShadow = styled.div`
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  height: 6px;
-  box-shadow: #ddd 0 -6px 6px -6px inset;
-`;
+// const Divider = styled.div<{ isDragging: boolean }>`
+//   background-color: #c4c6c8;
+//   height: 0.2rem;
+//   position: relative;
+//   cursor: ns-resize;
+//   &::after {
+//     content: "";
+//     position: absolute;
+//     top: -0.1rem;
+//     bottom: -0.1rem;
+//     left: 0;
+//     right: 0;
+//     background-color: ${({ isDragging }) => (isDragging ? "#0078e7" : "transparent")};
+//     transition: background-color 150ms;
+//   }
+//   &:hover::after,
+//   &:focus::after {
+//     background-color: #0078e7;
+//   }
+// `;
+// const DividerShadow = styled.div`
+//   position: absolute;
+//   left: 0;
+//   bottom: 0;
+//   right: 0;
+//   height: 6px;
+//   box-shadow: #ddd 0 -6px 6px -6px inset;
+// `;
 const Options = styled.form`
   flex: 1;
   display: flex;
@@ -251,29 +247,30 @@ interface SchemaEditorProps extends UseMainState {
   evaluateHandlerRef: MutableRefObject<() => void>;
 }
 
-export default function SchemaEditor({ state, setState, commonOptions, evaluateHandlerRef }: SchemaEditorProps) {
+export default function SchemaEditor({ state, setState, commonOptions }: SchemaEditorProps) {
   const { schemas, activeSchemaName } = state;
   const activeSchema = useMemo(
     () => schemas.find(({ name }) => name === activeSchemaName),
     [schemas, activeSchemaName],
   );
 
-  const monaco = useMonaco();
-  useEffect(() => {
-    if (!monaco) return;
-    // Clean up deleted schemata
-    const schemaUris = new Set(schemas.map(({ name }) => monaco.Uri.parse(name).toString()));
-    for (const model of monaco.editor.getModels()) {
-      if (!schemaUris.has(model.uri.toString())) {
-        model.dispose();
-      }
-    }
-  }, [monaco, schemas]);
+  // const monaco = useMonaco();
+  // useEffect(() => {
+  //   // if (!monaco)
+  //     return;
+  //   // Clean up deleted schemata
+  //   const schemaUris = new Set(schemas.map(({ name }) => monaco.Uri.parse(name).toString()));
+  //   for (const model of monaco.editor.getModels()) {
+  //     if (!schemaUris.has(model.uri.toString())) {
+  //       model.dispose();
+  //     }
+  //   }
+  // }, [monaco, schemas]);
 
   const getDefaultFileNameWithSchemaNames = useCallback(
     (schemaNames: string[]) =>
       memoize((name: string) => {
-        name ||= "無標題";
+        name ||= "默認方案";
         const indices = schemaNames
           .map(oldName => {
             if (oldName === name) return 0;
@@ -337,14 +334,14 @@ export default function SchemaEditor({ state, setState, commonOptions, evaluateH
         try {
           setState(
             actions.addSchema({
-              name: "切韻拼音",
-              input: await fetchFile(tshetUinhExamplesURLPrefix + "tupa.js", signal),
+              name: "默認方案",
+              input: newFileTemplate,
             }),
           );
         } catch {
           setState(
             actions.addSchema({
-              name: "無標題",
+              name: "默認方案",
               input: newFileTemplate,
             }),
           );
@@ -397,7 +394,7 @@ export default function SchemaEditor({ state, setState, commonOptions, evaluateH
       if (
         (
           await Swal.fire({
-            title: "要刪除此方案嗎？",
+            title: "是否刷新方案？",
             text: "此動作無法復原。",
             icon: "warning",
             showConfirmButton: false,
@@ -682,51 +679,51 @@ export default function SchemaEditor({ state, setState, commonOptions, evaluateH
     };
   }, [addFilesToSchema]);
 
-  const [isDividerDragging, setIsDividerDragging] = useState(false);
-  function dividerDrag({ target, clientY }: { target: EventTarget; clientY: number }, isMouse?: boolean) {
-    document.body.classList.add("dragging");
-    document.body.style.cursor = "ns-resize";
-    setIsDividerDragging(true);
-    const dividerElement = target as HTMLDivElement;
-    const container = dividerElement.parentElement!;
-    const editorElement = container.children[2];
+  // const [isDividerDragging, setIsDividerDragging] = useState(false);
+  // function dividerDrag({ target, clientY }: { target: EventTarget; clientY: number }, isMouse?: boolean) {
+  //   document.body.classList.add("dragging");
+  //   document.body.style.cursor = "ns-resize";
+  //   setIsDividerDragging(true);
+  //   const dividerElement = target as HTMLDivElement;
+  //   const container = dividerElement.parentElement!;
+  //   const editorElement = container.children[2];
+  //
+  //   const offsetY = clientY - dividerElement.getBoundingClientRect().top;
+  //
+  //   function move(event: { clientY: number } | TouchEvent) {
+  //     clientY = "clientY" in event ? event.clientY : (event.touches?.[0]?.clientY ?? clientY);
+  //     const editorTop = editorElement.getBoundingClientRect().top;
+  //     const numerator = clientY - offsetY - editorTop;
+  //     const denominator =
+  //       container.getBoundingClientRect().height - dividerElement.getBoundingClientRect().height - editorTop;
+  //     setState(state => ({ ...state, optionPanelHeight: Math.min(Math.max(1 - numerator / denominator, 0.1), 0.9) }));
+  //   }
+  //
+  //   function end() {
+  //     document.body.classList.remove("dragging");
+  //     document.body.style.cursor = "";
+  //     setIsDividerDragging(false);
+  //     if (isMouse) {
+  //       document.removeEventListener("mousemove", move);
+  //       document.removeEventListener("mouseup", end);
+  //     } else {
+  //       document.removeEventListener("touchmove", move);
+  //       document.removeEventListener("touchend", end);
+  //       document.removeEventListener("touchcancel", end);
+  //     }
+  //   }
+  //
+  //   if (isMouse) {
+  //     document.addEventListener("mousemove", move);
+  //     document.addEventListener("mouseup", end);
+  //   } else {
+  //     document.addEventListener("touchmove", move);
+  //     document.addEventListener("touchend", end);
+  //     document.addEventListener("touchcancel", end);
+  //   }
+  // }
 
-    const offsetY = clientY - dividerElement.getBoundingClientRect().top;
-
-    function move(event: { clientY: number } | TouchEvent) {
-      clientY = "clientY" in event ? event.clientY : (event.touches?.[0]?.clientY ?? clientY);
-      const editorTop = editorElement.getBoundingClientRect().top;
-      const numerator = clientY - offsetY - editorTop;
-      const denominator =
-        container.getBoundingClientRect().height - dividerElement.getBoundingClientRect().height - editorTop;
-      setState(state => ({ ...state, optionPanelHeight: Math.min(Math.max(1 - numerator / denominator, 0.1), 0.9) }));
-    }
-
-    function end() {
-      document.body.classList.remove("dragging");
-      document.body.style.cursor = "";
-      setIsDividerDragging(false);
-      if (isMouse) {
-        document.removeEventListener("mousemove", move);
-        document.removeEventListener("mouseup", end);
-      } else {
-        document.removeEventListener("touchmove", move);
-        document.removeEventListener("touchend", end);
-        document.removeEventListener("touchcancel", end);
-      }
-    }
-
-    if (isMouse) {
-      document.addEventListener("mousemove", move);
-      document.addEventListener("mouseup", end);
-    } else {
-      document.addEventListener("touchmove", move);
-      document.addEventListener("touchend", end);
-      document.addEventListener("touchcancel", end);
-    }
-  }
-
-  const [editorArea, setEditorArea] = useState<HTMLDivElement | null>(null);
+  const [editorArea] = useState<HTMLDivElement | null>(null);
   const [optionPanel, setOptionPanel] = useState<HTMLFormElement | null>(null);
   useLayoutEffect(() => {
     if (!editorArea || !optionPanel) return;
@@ -757,103 +754,103 @@ export default function SchemaEditor({ state, setState, commonOptions, evaluateH
             <FontAwesomeIcon icon={faFileCode} fixedWidth />
             <Name checked={activeSchemaName === name}>{name}</Name>
             <DeleteButton title="刪除方案" onClick={() => deleteSchema(name)}>
-              <FontAwesomeIcon icon={faXmark} size="sm" fixedWidth />
+              <FontAwesomeIcon icon={faRefresh} size="sm" fixedWidth />
             </DeleteButton>
             <Separator visible={activeSchemaName !== schemas[index + 1]?.name && activeSchemaName !== name} />
           </Tab>
         ))}
-        <CreateSchemaButton title="新增方案" onClick={createSchema.current}>
-          <FontAwesomeIcon icon={faPlus} fixedWidth />
-          <div>加載更多注音方案</div>
-        </CreateSchemaButton>
+        {/*<CreateSchemaButton title="新增方案" onClick={createSchema.current}>*/}
+        {/*  <FontAwesomeIcon icon={faPlus} fixedWidth />*/}
+        {/*  <div>加載更多注音方案</div>*/}
+        {/*</CreateSchemaButton>*/}
       </TabBar>
-      <EditorArea ref={setEditorArea} lang="en-x-code">
-        <Editor
-          path={activeSchema?.name || ""}
-          language="javascript"
-          value={activeSchema?.input || ""}
-          loading={<Spinner />}
-          options={{
-            fontFamily: codeFontFamily,
-            scrollbar: {
-              horizontalScrollbarSize: 10,
-              verticalScrollbarSize: 10,
-            },
-            unicodeHighlight: {
-              nonBasicASCII: false,
-              invisibleCharacters: false,
-              ambiguousCharacters: false,
-            },
-          }}
-          onMount={useCallback(
-            (editor, monaco) => {
-              editor.addAction({
-                id: "create-file",
-                label: "新增方案……",
-                // Ctrl/Cmd + N cannot be overridden in browsers
-                keybindings: [monaco.KeyMod.Alt | monaco.KeyCode.KeyN],
-                run() {
-                  createSchema.current();
-                },
-              });
-              editor.addAction({
-                id: "delete-file",
-                label: "刪除方案……",
-                // Ctrl/Cmd + W cannot be overridden in browsers
-                keybindings: [monaco.KeyMod.Alt | monaco.KeyCode.KeyW],
-                run() {
-                  deleteActiveSchema.current();
-                },
-              });
-              editor.addAction({
-                id: "open-file-from-disk",
-                label: "從本機開啟方案……",
-                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyO],
-                run() {
-                  openFileFromDisk.current();
-                },
-              });
-              editor.addAction({
-                id: "save-file-to-disk",
-                label: "儲存方案至本機……",
-                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
-                run() {
-                  saveFileToDisk.current();
-                },
-              });
+      {/*<EditorArea ref={setEditorArea} lang="en-x-code">*/}
+      {/*  <Editor*/}
+      {/*    path={activeSchema?.name || ""}*/}
+      {/*    language="javascript"*/}
+      {/*    value={activeSchema?.input || ""}*/}
+      {/*    loading={<Spinner />}*/}
+      {/*    options={{*/}
+      {/*      fontFamily: codeFontFamily,*/}
+      {/*      scrollbar: {*/}
+      {/*        horizontalScrollbarSize: 10,*/}
+      {/*        verticalScrollbarSize: 10,*/}
+      {/*      },*/}
+      {/*      unicodeHighlight: {*/}
+      {/*        nonBasicASCII: false,*/}
+      {/*        invisibleCharacters: false,*/}
+      {/*        ambiguousCharacters: false,*/}
+      {/*      },*/}
+      {/*    }}*/}
+      {/*    onMount={useCallback(*/}
+      {/*      (editor, monaco) => {*/}
+      {/*        editor.addAction({*/}
+      {/*          id: "create-file",*/}
+      {/*          label: "新增方案……",*/}
+      {/*          // Ctrl/Cmd + N cannot be overridden in browsers*/}
+      {/*          keybindings: [monaco.KeyMod.Alt | monaco.KeyCode.KeyN],*/}
+      {/*          run() {*/}
+      {/*            createSchema.current();*/}
+      {/*          },*/}
+      {/*        });*/}
+      {/*        editor.addAction({*/}
+      {/*          id: "delete-file",*/}
+      {/*          label: "刪除方案……",*/}
+      {/*          // Ctrl/Cmd + W cannot be overridden in browsers*/}
+      {/*          keybindings: [monaco.KeyMod.Alt | monaco.KeyCode.KeyW],*/}
+      {/*          run() {*/}
+      {/*            deleteActiveSchema.current();*/}
+      {/*          },*/}
+      {/*        });*/}
+      {/*        editor.addAction({*/}
+      {/*          id: "open-file-from-disk",*/}
+      {/*          label: "從本機開啟方案……",*/}
+      {/*          keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyO],*/}
+      {/*          run() {*/}
+      {/*            openFileFromDisk.current();*/}
+      {/*          },*/}
+      {/*        });*/}
+      {/*        editor.addAction({*/}
+      {/*          id: "save-file-to-disk",*/}
+      {/*          label: "儲存方案至本機……",*/}
+      {/*          keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],*/}
+      {/*          run() {*/}
+      {/*            saveFileToDisk.current();*/}
+      {/*          },*/}
+      {/*        });*/}
 
-              function evaluate() {
-                evaluateHandlerRef.current();
-              }
-              // Using `addCommand` instead of `addAction`
-              // as this does not need to be in the command palette
-              editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyR, evaluate);
-              editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Enter, evaluate);
-            },
-            [saveFileToDisk, evaluateHandlerRef],
-          )}
-          onChange={useCallback(
-            input => {
-              if (typeof input !== "undefined" && activeSchema)
-                setState(actions.setSchemaInput(activeSchemaName, input));
-            },
-            [activeSchema, activeSchemaName, setState],
-          )}
-        />
-        <DividerShadow />
-      </EditorArea>
-      <Divider
-        isDragging={isDividerDragging}
-        onMouseDown={event => dividerDrag(event, true)}
-        onTouchStart={event => dividerDrag(event.touches[0])}
-      />
+      {/*        function evaluate() {*/}
+      {/*          evaluateHandlerRef.current();*/}
+      {/*        }*/}
+      {/*        // Using `addCommand` instead of `addAction`*/}
+      {/*        // as this does not need to be in the command palette*/}
+      {/*        editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyR, evaluate);*/}
+      {/*        editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Enter, evaluate);*/}
+      {/*      },*/}
+      {/*      [saveFileToDisk, evaluateHandlerRef],*/}
+      {/*    )}*/}
+      {/*    onChange={useCallback(*/}
+      {/*      input => {*/}
+      {/*        if (typeof input !== "undefined" && activeSchema)*/}
+      {/*          setState(actions.setSchemaInput(activeSchemaName, input));*/}
+      {/*      },*/}
+      {/*      [activeSchema, activeSchemaName, setState],*/}
+      {/*    )}*/}
+      {/*  />*/}
+      {/*  <DividerShadow />*/}
+      {/*</EditorArea>*/}
+      {/*<Divider*/}
+      {/*  isDragging={isDividerDragging}*/}
+      {/*  onMouseDown={event => dividerDrag(event, true)}*/}
+      {/*  onTouchStart={event => dividerDrag(event.touches[0])}*/}
+      {/*/>*/}
       <Options ref={setOptionPanel} className="pure-form">
         <OptionsTitle>
           <span>選項</span>
           {activeSchema?.parameters.size || activeSchema?.parameters.errors.length ? (
             <ResetButton title="將所有選項恢復成預設值" onClick={resetParameters}>
               <FontAwesomeIcon icon={faRotateLeft} size="sm" />
-              <div>將所有選項恢復成預設值</div>
+              <div>恢復默認</div>
             </ResetButton>
           ) : null}
         </OptionsTitle>

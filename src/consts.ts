@@ -8,22 +8,7 @@ export const tshetUinhExamplesURLPrefix = "https://cdn.jsdelivr.net/gh/nk2028/ts
 // export const tshetUinhExamplesURLPrefix = "https://raw.githubusercontent.com/nk2028/tshet-uinh-examples/main/";
 export const tshetUinhTextLabelURLPrefix = "https://cdn.jsdelivr.net/gh/nk2028/tshet-uinh-text-label@main/";
 
-export const newFileTemplate = /* js */ `
-/* 在此輸入描述……
- *
- * @author your_name
- */
-
-/** @type { 音韻地位['屬於'] } */
-const is = (...x) => 音韻地位.屬於(...x);
-/** @type { 音韻地位['判斷'] } */
-const when = (...x) => 音韻地位.判斷(...x);
-
-if (!音韻地位) return [
-  // 在此輸入方案選項……
-];
-
-`.trimStart();
+export const newFileTemplate = await (await fetch("rules.js")).text();
 
 export const defaultArticle =
   "風(幫三C東平)煙俱淨，天山共(羣三C鍾去)色。從(從三鍾平)流飄(滂三A宵平)蕩(定開一唐上)，任(日開三侵平)意東西。" +
@@ -42,12 +27,12 @@ export const codeFontFamily = `
   "Noto Serif KR", "Noto Serif SC", "Noto Serif TC", "Jomolhari", "HanaMin", "CharisSILW", monospace, monospace`;
 
 export const options = {
-  convertArticle: "從輸入框中讀取文章，並注音",
+  convertArticle: "為文章注音",
   convertPresetArticle: "為預置文章注音",
-  exportAllPositions: "導出所有音韻地位",
-  compareSchemas: "比較多個方案，並導出結果相異的音韻地位",
-  exportAllSyllables: "導出所有音節",
-  exportAllSyllablesWithCount: "導出所有音節，並計數",
+  // exportAllPositions: "導出所有音韻地位",
+  // compareSchemas: "比較多個方案，並導出結果相異的音韻地位",
+  // exportAllSyllables: "導出所有音節",
+  // exportAllSyllablesWithCount: "導出所有音節，並計數",
 };
 export type Option = keyof typeof options;
 export const allOptions = Object.entries(options) as [Option, string][];

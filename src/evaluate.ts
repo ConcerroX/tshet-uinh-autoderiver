@@ -2,6 +2,7 @@ import { 推導方案 } from "tshet-uinh-deriver-tools";
 
 import { Formatter } from "./Classes/CustomElement";
 import { tshetUinhTextLabelURLPrefix } from "./consts";
+import { type Modification, MODIFICATIONS } from "./modification";
 import { evaluateOption, getArticle, setArticle } from "./options";
 import { fetchFile, isArray, normalizeFileName, notifyError } from "./utils";
 
@@ -30,8 +31,16 @@ export default async function evaluate(state: MainState): Promise<ReactNode> {
 
   if (option === "convertPresetArticle" && !getArticle())
     setArticle(await fetchFile(tshetUinhTextLabelURLPrefix + "index.txt"));
-  else if (option === "compareSchemas" && schemas.length < 2) throw notifyError("此選項需要兩個或以上方案");
+  // else if (option === "compareSchemas" && schemas.length < 2) throw notifyError("此選項需要兩個或以上方案");
   else await new Promise(resolve => setTimeout(resolve));
+
+  function getManualPhonetic(char: string | null | undefined, positionDesc: string, orig: string): string | null {
+    if (!char) return null;
+    const charMap = MODIFICATIONS.get(char);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // MODIFICATIONS.set(char, charMap?.filter(it => it[0] != positionDesc))
+    return (charMap?.find(it => it[0] == positionDesc)?.[1] as Modification)?.(orig) || null;
+  }
 
   try {
     const derivers: [derive: 推導函數<DeriveResult, [RequireFunction]>, require: Require][] = schemas.map(
@@ -42,7 +51,15 @@ export default async function evaluate(state: MainState): Promise<ReactNode> {
       },
     );
     return evaluateOption[option](state, (地位, 字頭) =>
-      derivers.map(([derive, require]) => formatResult(derive(地位, 字頭, require(地位, 字頭)))),
+      derivers.map(([derive, require]) => {
+        const orig = derive(地位, 字頭, require(地位, 字頭));
+        const manualReading = getManualPhonetic(字頭, 地位.描述, orig.toString());
+        if (manualReading) {
+          return formatResult(manualReading);
+        }
+        // 否则使用原始推导
+        return formatResult(orig);
+      }),
     );
   } catch (err) {
     throw notifyError("程式碼錯誤", err);
@@ -60,7 +77,7 @@ export default async function evaluate(state: MainState): Promise<ReactNode> {
 }
 
 export class SchemaFromRequire {
-  private _schema: 推導方案<DeriveResult, [RequireFunction]>;
+  private readonly _schema: 推導方案<DeriveResult, [RequireFunction]>;
   constructor(
     rawDeriver: 原始推導函數<DeriveResult, [RequireFunction]>,
     private _require: Require,

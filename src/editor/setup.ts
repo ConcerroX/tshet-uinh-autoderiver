@@ -1,7 +1,7 @@
 import * as monaco from "monaco-editor";
 import TshetUinh from "tshet-uinh";
 
-import { loader } from "@monaco-editor/react";
+// import { loader } from "@monaco-editor/react";
 
 import "./initialize";
 import libs from "./libs";
@@ -16,7 +16,7 @@ declare global {
 self.monaco = monaco;
 self.TshetUinh = TshetUinh;
 
-loader.config({ monaco });
+// loader.config({ monaco });
 
 const defaults = monaco.languages.typescript.javascriptDefaults;
 defaults.setCompilerOptions({

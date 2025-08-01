@@ -10,10 +10,10 @@ import Spinner from "./Spinner";
 import { listenTooltip } from "./TooltipChar";
 import Swal from "../Classes/SwalReact";
 import { allOptions, defaultArticle } from "../consts";
-import evaluate from "../evaluate";
 import { listenArticle } from "../options";
 import initialState, { stateStorageLocation } from "../state";
 import TooltipLabel from "./TooltipLabel";
+import evaluate from "../evaluate";
 import { stopPropagation } from "../utils";
 
 import type { MainState, Option, ReactNode } from "../consts";
@@ -193,8 +193,23 @@ export default function Main({ evaluateHandlerRef }: { evaluateHandlerRef: Mutab
   const [loading, setLoading] = useState(false);
 
   const [copyTooltipText, setCopyTooltipText] = useState("全部複製");
-  const copyEvaluationResult = useCallback(async () => {
+  const copyEvaluationResultWithArticle = useCallback(async () => {
     const content = ref.current.textContent?.trim();
+    if (content) {
+      try {
+        await navigator.clipboard.writeText(content);
+        setCopyTooltipText("已複製");
+      } catch(e) {
+        setCopyTooltipText("複製失敗" + e);
+      }
+    }
+  }, []);
+
+  const copyEvaluationResult = useCallback(async () => {
+    const content = Array.from(ref.current.children).map(item => {
+      return item?.firstElementChild?.children[1].textContent;
+    }).join(" ")
+
     if (content) {
       try {
         await navigator.clipboard.writeText(content);
@@ -204,6 +219,7 @@ export default function Main({ evaluateHandlerRef }: { evaluateHandlerRef: Mutab
       }
     }
   }, []);
+
   const onHideTooltip = useCallback(() => setCopyTooltipText("全部複製"), []);
 
   // XXX Please Rewrite
@@ -291,7 +307,7 @@ export default function Main({ evaluateHandlerRef }: { evaluateHandlerRef: Mutab
               <input
                 className="pure-button pure-button-primary"
                 type="button"
-                value="適用"
+                value="應用"
                 onClick={evaluateHandlerRef.current}
               />
               <label hidden={option !== "convertArticle"}>
@@ -302,20 +318,20 @@ export default function Main({ evaluateHandlerRef }: { evaluateHandlerRef: Mutab
                 />
                 轉換異體字
               </label>
-              <label hidden={option !== "convertArticle"}>
-                <input
-                  type="checkbox"
-                  checked={syncCharPosition}
-                  onChange={useHandle("syncCharPosition", event => event.target.checked)}
-                />
-                同步音韻地位選擇至輸入框
-              </label>
+              {/*<label hidden={option !== "convertArticle"}>*/}
+              {/*  <input*/}
+              {/*    type="checkbox"*/}
+              {/*    checked={syncCharPosition}*/}
+              {/*    onChange={useHandle("syncCharPosition", event => event.target.checked)}*/}
+              {/*  />*/}
+              {/*  同步音韻地位選擇至輸入框*/}
+              {/*</label>*/}
               <input
                 hidden={option !== "convertArticle"}
                 disabled={article === defaultArticle}
                 className="pure-button pure-button-danger"
                 type="button"
-                value="恢復成預設文本"
+                value="恢復默認"
                 onClick={resetArticle}
               />
             </div>
@@ -343,9 +359,15 @@ export default function Main({ evaluateHandlerRef }: { evaluateHandlerRef: Mutab
               {!loading && (
                 <>
                   <TooltipLabel description={copyTooltipText} onHideTooltip={onHideTooltip}>
+                    <CopyButton onClick={copyEvaluationResultWithArticle}>
+                      <FontAwesomeIcon icon={faCopy} size="sm" />
+                      <div>複製（包括原文）</div>
+                    </CopyButton>
+                  </TooltipLabel>
+                  <TooltipLabel description={copyTooltipText} onHideTooltip={onHideTooltip}>
                     <CopyButton onClick={copyEvaluationResult}>
                       <FontAwesomeIcon icon={faCopy} size="sm" />
-                      <div>全部複製</div>
+                      <div>複製讀音</div>
                     </CopyButton>
                   </TooltipLabel>
                   <form method="dialog">
