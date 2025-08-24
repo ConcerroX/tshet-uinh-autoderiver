@@ -1,7 +1,13 @@
 export type Modification = (a: string) => string;
 
+function modify(initialKey: string, finalKey: string, toneKey: string): Modification {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
+  return () => window["shared"]["build"](initialKey, finalKey, toneKey);
+}
+
 export const MODIFICATIONS = new Map<string, (string | Modification)[][]>([
-  ["们", [["明一魂平", it => it.replace("2", "0")]]],
+  ["们", [["明一魂平", modify("M", "UEN", "輕")]]],
   ["們", [["明一魂平", it => it.replace("2", "0")]]],
   ["他", [["透開一歌平", it => it.replace("o", "a")]]],
   ["她", [["透開一歌平", it => it.replace("o", "a")]]],
@@ -37,13 +43,14 @@ export const ADDITIONS = new Map<string, string[][]>([
   ["什", [["常開三侵平", "【正確形式：甚麽】代词 表示疑问"]]],
   ["甚", [["常開三侵平", "代词 表示疑问"]]],
   ["時", [["常開三之平", "時辰"]]],
-  ["给", [["見開三B侵入", "交付；送与"]]], // buggy
-  // ["給", [["見開三B侵入", "交付；送与"]]],
+  ["给", [["見開三B侵入", "交付；送与"]]],
+  ["給", [["見開三B侵入", "交付；送与"]]],
   ["打", [["端開二庚上", "撞击；敲打"]]],
   ["最", [["精合三脂去", "居于首要"]]],
   ["怎", [["章開三侵上", "代词 表示疑问"]]],
   ["做", [["精開一歌去", "制作；创作"]]],
   ["完", [["影合二刪平", "完結、全部"]]],
   ["丸", [["影合二刪平", "圓團"]]],
+  ["擦", [["清開一寒入", "擦拭"]]],
 ]);
 // ADDITIONS.set("強", [["曉開一豪上", "喜爱，与'恶'(wù)相对"]]);
