@@ -117,89 +117,90 @@ function getInitialKey() {
 
 const FINALS = {
   _: ["", "-", "", "", ""],
-  UNG: ["ung", "-", "ong", "ʊŋ", "ʷʊ̟ŋ̚ʷ"],
-  IUNG: ["iung", "-", "iong", "jʊŋ", "j͗ʊ̟ŋ̚ʷ"],
-  ANG: ["ang", "-", "ang", "ɑŋ", "ɑ̟ŋ̚"],
-  UANG: ["uang", "-", "uang", "wɑŋ", "wɑ̟ŋ̚"],
-  IANG: ["iang", "-", "iang", "jɑŋ", "jɑ̟ŋ̚"],
-  EI: ["ei", "-", "ei", "eɪ", "əɪ"],
-  I: ["i", "-", "i", "i", "i"],
-  Z: ["z", "-", "i", "ɹ̩", "ɹ̟̍"],
-  R: ["r", "-", "i", "ɻ̍", "ɻ̺̍"],
-  EE: ["ee", "-", "i", "ɻi", "ɻi"],
-  ER: ["er", "-", "er", "ɚ", "ə̠ɻ˕"],
-  UAI: ["uai", "-", "uai", "waɪ", "wa̠ɪ̯"],
-  UEI: ["uei", "-", "ui", "weɪ", "we̠ɪ̯"],
-  YU: ["yu", "-", "ü", "y", "y˗"],
-  YU2: ["yu", "-", "ü", "y", "y˗"],
-  U: ["u", "-", "u", "u", "u"],
-  V: ["u", "-", "u", "ʋ̩", "ʋ̩ˠ"],
-  IO: ["io", "-", "io", "jo", "j͗ʏ̯̈o̜̽"],
-  AI: ["ai", "-", "ai", "aɪ", "a̠ɪ̯"],
-  OI: ["oi", "-", "oi", "-", "-"],
-  IAI: ["iai", "-", "iai", "jai", "jæi̯"],
-  UA: ["ua", "-", "ua", "wa", "wä"],
-  EN: ["en", "-", "en", "ən", "ə̟n̚"],
-  IN: ["in", "-", "in", "in", "ji̞n̚"],
-  UEN: ["uen", "-", "un", "wən", "wən̚"],
-  YUN: ["yun", "-", "ün", "yn", "ɥy˕n̚"],
-  AN: ["an", "-", "an", "an", "a̠n̚"],
-  UAN: ["uan", "-", "uan", "wan", "wa̠n̚"],
-  UON: ["uon", "-", "uon", "wɔn", "wɔn̚"],
-  IEN: ["ien", "-", "ian", "jɛn", "jɛ̠n̚"],
-  YUAN: ["yuen", "-", "üan", "ɥæn", "ɥʏ̯̈æ̠͗n̚"],
-  AU: ["au", "-", "ao", "ɑʊ", "ɑ̟ʊ̯"],
-  IAU: ["iau", "-", "iao", "jɑʊ", "jɑ̟ʊ̯"],
-  O: ["o", "-", "o", "o", "ʷo̜̽"],
-  UO: ["uo", "-", "uo", "wo", "wo̜̽"],
-  IE: ["ie", "-", "iê", "jɛ", "jɛ̠"],
-  YUE: ["yue", "-", "üê", "ɥɛ", "ɥɛ̠"],
-  IA: ["ia", "-", "ia", "ja", "jä"],
-  A: ["a", "-", "a", "a", "ä"],
-  AE: ["ae", "-", "ê", "ɛ", "ɛ̠"],
-  ENG: ["eng", "-", "eng", "əŋ", "əŋ̚"],
-  UENG: ["ueng", "-", "ueng", "wɤŋ", "wə̹ŋ̚"],
-  ING: ["ing", "-", "ing", "iŋ", "jɪŋ̚"],
-  OU: ["ou", "-", "ou", "oʊ", "ʷo̜̽ʊ̯"],
-  IU: ["iu", "-", "iu", "jʊ", "j͗ʊ"],
+  UNG: ["ung", "-", "ong", "ʊŋ", "ʷʊ̟ŋ̚ʷ", -2],
+  IUNG: ["iung", "-", "iong", "jʊŋ", "j͗ʊ̟ŋ̚ʷ", -2],
+  ANG: ["ang", "-", "ang", "ɑŋ", "ɑ̟ŋ̚", -2],
+  UANG: ["uang", "-", "uang", "wɑŋ", "wɑ̟ŋ̚", -2],
+  IANG: ["iang", "-", "iang", "jɑŋ", "jɑ̟ŋ̚", -2],
+  EI: ["ei", "-", "ei", "eɪ", "əɪ", -1],
+  I: ["i", "-", "i", "i", "i", 0],
+  Z: ["z", "-", "i", "ɹ̩", "ɹ̟̍", 0],
+  R: ["r", "-", "i", "ɻ̍", "ɻ̺̍", 0],
+  EE: ["ee", "-", "i", "ɻi", "ɻi", -1],
+  ER: ["er", "-", "er", "ɚ", "ə̠ɻ˕", -1],
+  UAI: ["uai", "-", "uai", "waɪ", "wa̠ɪ̯", -1],
+  UEI: ["uei", "-", "ui", "weɪ", "we̠ɪ̯", -1],
+  YU: ["yu", "-", "ü", "y", "y˗", 0],
+  YU2: ["yu", "-", "ü", "y", "y˗", 0],
+  U: ["u", "-", "u", "u", "u", 0],
+  V: ["u", "-", "u", "ʋ̩", "ʋ̩ˠ", 0],
+  IO: ["io", "-", "io", "jo", "j͗ʏ̯̈o̜̽", 0],
+  AI: ["ai", "-", "ai", "aɪ", "a̠ɪ̯", -1],
+  OI: ["oi", "-", "oi", "-", "-", -1],
+  IAI: ["iai", "-", "iai", "jai", "jæi̯", -1],
+  UA: ["ua", "-", "ua", "wa", "wä", 0],
+  EN: ["en", "-", "en", "ən", "ə̟n̚", -1],
+  IN: ["in", "-", "in", "in", "ji̞n̚", -1],
+  UEN: ["uen", "-", "un", "wən", "wən̚", -1],
+  YUN: ["yun", "-", "ün", "yn", "ɥy˕n̚", -1],
+  AN: ["an", "-", "an", "an", "a̠n̚", -1],
+  UAN: ["uan", "-", "uan", "wan", "wa̠n̚", -1],
+  UON: ["uon", "-", "uon", "wɔn", "wɔn̚", -1],
+  IEN: ["ien", "-", "ian", "jɛn", "jɛ̠n̚", -1],
+  YUAN: ["yuen", "-", "üan", "ɥæn", "ɥʏ̯̈æ̠͗n̚", -1],
+  AU: ["au", "-", "ao", "ɑʊ", "ɑ̟ʊ̯", -1],
+  IAU: ["iau", "-", "iao", "jɑʊ", "jɑ̟ʊ̯", -1],
+  O: ["o", "-", "o", "o", "ʷo̜̽", 0],
+  UO: ["uo", "-", "uo", "wo", "wo̜̽", 0],
+  IE: ["ie", "-", "iê", "jɛ", "jɛ̠", 0],
+  YUE: ["yue", "-", "üê", "ɥɛ", "ɥɛ̠", 0],
+  IA: ["ia", "-", "ia", "ja", "jä", 0],
+  A: ["a", "-", "a", "a", "ä", 0],
+  AE: ["ae", "-", "ê", "ɛ", "ɛ̠", 0],
+  ENG: ["eng", "-", "eng", "əŋ", "əŋ̚", -2],
+  UENG: ["ueng", "-", "ueng", "wɤŋ", "wə̹ŋ̚", -2],
+  ING: ["ing", "-", "ing", "iŋ", "jɪŋ̚", -2],
+  OU: ["ou", "-", "ou", "oʊ", "ʷo̜̽ʊ̯", -1],
+  IU: ["iu", "-", "iu", "jʊ", "j͗ʊ", -1],
 
-  EM: ["em", "", "em", "əm", "ə̟m̚"],
-  IM: ["im", "", "im", "im", "ji̞m̚"],
-  AM: ["am", "", "am", "am", "a̠m̚"],
-  OM: ["om", "", "om", "ɔm", "ɔm̚"],
-  IEM: ["iem", "", "iam", "jɛm", "jɛ̠m̚"],
-  UAM: ["uam", "", "uam", "wam", "wa̠m̚"],
+  EM: ["em", "", "em", "əm", "ə̟m̚", -1],
+  IM: ["im", "", "im", "im", "ji̞m̚", -1],
+  AM: ["am", "", "am", "am", "a̠m̚", -1],
+  OM: ["om", "", "om", "ɔm", "ɔm̚", -1],
+  IEM: ["iem", "", "iam", "jɛm", "jɛ̠m̚", -1],
+  UAM: ["uam", "", "uam", "wam", "wa̠m̚", -1],
 
-  UK: ["uk", "", "ug", "uk", "uk̚"],
-  YUK: ["yuk", "", "üg", "yk", "y˗k̚"],
-  OK: ["ok", "", "og", "ok", "ʷo̜̽k̚"],
-  UOK: ["uok", "", "uog", "wok", "wo̜̽k̚"],
-  IOK: ["iok", "", "iog", "jok", "j͗ʏ̯̈o̜̽k̚"],
-  RT: ["it", "", "id", "ɻ̍t", "ɻ̺̍t̚"],
-  IT: ["it", "", "id", "it", "it̚"],
-  UT: ["ut", "", "ud", "ut", "ut̚"],
-  YUT: ["yut", "", "üd", "yt", "y˗t̚"],
-  YUET: ["yuet", "", "üêd", "ɥɛt", "ɥɛ̠t̚"],
-  ET: ["et", "", "ed", "ət", "ə̟t̚"],
-  AT: ["at", "", "ad", "at", "ät̚"],
-  OT: ["ot", "", "od", "ot", "ʷo̜̽t̚"],
-  UOT: ["uot", "", "uod", "wot", "wo̜̽t̚"],
-  IAT: ["iat", "", "iad", "jat", "jät̚"],
-  IET: ["iet", "", "iêd", "jɛt", "jɛ̠t̚"],
-  AET: ["aet", "", "êd", "ɛt", "ɛ̠t̚"],
-  RK: ["ik", "", "ig", "ɻ̍k", "ɻ̺̍k̚"],
-  EK: ["ek", "", "eg", "ək", "ə̟k̚"],
-  IK: ["ik", "", "ig", "ik", "ik̚"],
-  RP: ["ip", "", "ib", "ɻ̍p", "ɻ̺̍p̚"],
-  EP: ["ep", "", "eb", "əp", "ə̟p̚"],
-  IP: ["ip", "", "ib", "ip", "ip̚"],
-  AP: ["ap", "", "ab", "ap", "äp̚"],
-  OP: ["op", "", "ob", "op", "ʷo̜̽p̚"],
-  IEP: ["iep", "", "iêb", "jɛp", "jɛ̠p̚"],
-  IAP: ["iap", "", "iab", "jap", "jäp̚"],
-  UAP: ["uap", "", "uab", "wap", "wäp̚"],
-  UAT: ["uat", "", "uad", "wat", "wät̚"],
-  YUOK: ["yuok", "", "üog", "ɥok", "ɥ͗ʏ̯̈o̜̽k̚"],
+  UK: ["uk", "", "ug", "uk", "uk̚", -1],
+  YUK: ["yuk", "", "üg", "yk", "y˗k̚", -1],
+  OK: ["ok", "", "og", "ok", "ʷo̜̽k̚", -1],
+  UOK: ["uok", "", "uog", "wok", "wo̜̽k̚", -1],
+  IOK: ["iok", "", "iog", "jok", "j͗ʏ̯̈o̜̽k̚", -1],
+  RT: ["it", "", "id", "ɻ̍t", "ɻ̺̍t̚", -1],
+  IT: ["it", "", "id", "it", "it̚", -1],
+  UT: ["ut", "", "ud", "ut", "ut̚", -1],
+  YUT: ["yut", "", "üd", "yt", "y˗t̚", -1],
+  YUET: ["yuet", "", "üêd", "ɥɛt", "ɥɛ̠t̚", -1, -1],
+  ET: ["et", "", "ed", "ət", "ə̟t̚", -1],
+  AT: ["at", "", "ad", "at", "ät̚", -1],
+  OT: ["ot", "", "od", "ot", "ʷo̜̽t̚", -1],
+  UOT: ["uot", "", "uod", "wot", "wo̜̽t̚", -1],
+  IAT: ["iat", "", "iad", "jat", "jät̚", -1],
+  IET: ["iet", "", "iêd", "jɛt", "jɛ̠t̚", -1],
+  AET: ["aet", "", "êd", "ɛt", "ɛ̠t̚", -1],
+  RK: ["ik", "", "ig", "ɻ̍k", "ɻ̺̍k̚", -1],
+  EK: ["ek", "", "eg", "ək", "ə̟k̚", -1],
+  AK: ["ak", "", "ag", "ak", "ä̟k̚", -1],
+  IK: ["ik", "", "ig", "ik", "ik̚", -1],
+  RP: ["ip", "", "ib", "ɻ̍p", "ɻ̺̍p̚", -1],
+  EP: ["ep", "", "eb", "əp", "ə̟p̚", -1],
+  IP: ["ip", "", "ib", "ip", "ip̚", -1],
+  AP: ["ap", "", "ab", "ap", "äp̚", -1],
+  OP: ["op", "", "ob", "op", "ʷo̜̽p̚", -1],
+  IEP: ["iep", "", "iêb", "jɛp", "jɛ̠p̚", -1],
+  IAP: ["iap", "", "iab", "jap", "jäp̚", -1],
+  UAP: ["uap", "", "uab", "wap", "wäp̚", -1],
+  UAT: ["uat", "", "uad", "wat", "wät̚", -1],
+  YUOK: ["yuok", "", "üog", "ɥok", "ɥ͗ʏ̯̈o̜̽k̚", -1],
 };
 
 function getFinalKey() {
@@ -370,7 +371,7 @@ function getFinalKey() {
             "開口 或 幫組": { [捲舌]: "EK", "": "IK" },
             "合口": "YUK",
           },
-          一等: { "開口 或 幫組": "EK", "合口": "UOK" },
+          一等: { "開口 或 幫組": "AK", "合口": "UOK" },
         },
         深攝: { "章組": "RP", [捲舌]: "EP", "": "IP" },
         咸攝: {
@@ -386,13 +387,13 @@ function getFinalKey() {
 }
 
 const TONES = {
-  輕: [0, 0, 0, 0, 0],
-  陰平: [1, 1, 1, 1, 1],
-  陽平: [2, 2, 2, 2, 2],
-  上: [3, 3, 3, 3, 3],
-  去: [4, 4, 4, 4, 4],
-  陰入: [5, 5, 5, 5, 5],
-  陽入: [6, 6, 6, 6, 6],
+  輕: [0, 0, 0, 0, 0, ""],
+  陰平: [1, 1, 1, 1, 1, "\u0304"],
+  陽平: [2, 2, 2, 2, 2, "\u0301"],
+  上: [3, 3, 3, 3, 3, "\u030C"],
+  去: [4, 4, 4, 4, 4, "\u0300"],
+  陰入: [5, 5, 5, 5, 5, "\u0304"],
+  陽入: [6, 6, 6, 6, 6, "\u0302"],
 };
 
 function getToneKey() {
@@ -411,16 +412,18 @@ let isIOrYu =
   finalKey.startsWith("I") || finalKey.startsWith("Y") || finalKey.startsWith("R") || finalKey.startsWith("Z");
 
 if (isIOrYu) {
-  initialKey = {
-    G: "J",
-    K: "CHI",
-    H: "HS",
-    NG: "NY",
-  }[initialKey] ?? initialKey;
+  initialKey =
+    {
+      G: "J",
+      K: "CHI",
+      H: "HS",
+      NG: "NY",
+    }[initialKey] ?? initialKey;
 } else {
-  initialKey ??= {
-    NY: "NG",
-  }[initialKey] ?? initialKey;
+  initialKey ??=
+    {
+      NY: "NG",
+    }[initialKey] ?? initialKey;
 }
 
 if (initialKey === "F" && finalKey === "U") {
@@ -445,6 +448,7 @@ function nml(ret) {
     [/^ip$/, "yip"],
     [/^it$/, "yit"],
     [/^ik$/, "yik"],
+    [/^iu$/, "you"],
     [/^i/, "y"],
     [/^u$/, "wu"],
     [/^ut$/, "wut"],
@@ -483,8 +487,22 @@ function build(initialKey, finalKey, toneKey) {
   let initialData = INITIALS[initialKey];
   let finalData = FINALS[finalKey];
   let toneData = TONES[toneKey];
-  let ret = 拼式(...initialData) + 拼式(...finalData);
-  return (選項.拼式版本 === "優化（默認）" ? nml2(nml(ret)) : ret) + 拼式(...toneData);
+
+  let initialStr = 拼式(...initialData);
+  let finalStr = 拼式(...finalData);
+  let toneStr = 拼式(...toneData);
+  let ret = initialStr + finalStr;
+  if (選項.拼式版本 === "優化（默認）") {
+    ret = nml2(nml(ret));
+    if (選項.標調方式 === "附標") {
+      let splitI = ret.length + (finalData[5] ?? 0);
+      ret = ret.substring(0, splitI) + toneData[5] + ret.substring(splitI);
+    }
+  }
+  if (選項.標調方式 !== "附標") {
+    ret += toneStr;
+  }
+  return ret;
 }
 
 shared.initials = INITIALS;
