@@ -9,6 +9,7 @@ function modify(initialKey: string, finalKey: string, toneKey: string): Modifica
 export const MODIFICATIONS = new Map<string, (string | Modification)[][]>([
   ["们", [["明一魂平", modify("M", "UEN", "輕")]]],
   ["們", [["明一魂平", modify("M", "UEN", "輕")]]],
+  ["哈", [["曉開一歌平", modify("H", "A", "輕")]]],
   ["他", [["透開一歌平", it => it.replace("o", "a")]]],
   ["她", [["透開一歌平", it => it.replace("o", "a")]]],
   ["它", [["透開一歌平", it => it.replace("o", "a")]]],
@@ -27,6 +28,9 @@ export const MODIFICATIONS = new Map<string, (string | Modification)[][]>([
 export const ADDITIONS = new Map<string, string[][]>([
   ["们", [["明一魂平", "用在人称代词或指人的名词后面，表示复数"]]],
   ["們", [["明一魂平", "用在人称代词或指人的名词后面，表示复数"]]],
+  ["哈", [["曉開一歌平", "張口舒氣；形容笑聲；姓"]]],
+  ["擼", [["來一模平", "捋、用手抓住東西的某一部分，向別的部分移動壓取"]]],
+  ["撸", [["來一模平", "捋、用手抓住東西的某一部分，向別的部分移動壓取"]]],
   ["不", [["並一魂入", "與弗同，表否定"]]],
   ["他", [["透開一歌平", "代词，指人"]]],
   ["她", [["透開一歌平", "代词，指女性"]]],

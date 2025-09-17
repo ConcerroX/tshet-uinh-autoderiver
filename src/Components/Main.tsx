@@ -71,11 +71,16 @@ const OutputContent = styled.output`
     flex-direction: column-reverse;
     align-items: center;
     vertical-align: bottom;
+    user-select: none;
+  }
+  ruby > span {
+    user-select: all;
   }
   rt {
     font-size: 82.5%;
     line-height: 1.1;
     text-align: center;
+    user-select: all;
   }
   table {
     margin-top: -0.5rem;
