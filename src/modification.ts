@@ -25,7 +25,6 @@ export const MODIFICATIONS = new Map<string, (string | Modification)[][]>([
   ["完", [["影合二刪平", it => it.replace("hw", "w").replace("1", "2")]]],
   ["丸", [["影合二刪平", it => it.replace("hw", "w").replace("1", "2")]]],
 ]);
-// MODIFICATIONS.set("们", [["明一魂平", () => "men"]]);
 
 export const ADDITIONS = new Map<string, string[][]>([
   ["们", [["明一魂平", "用在人称代词或指人的名词后面，表示复数"]]],
@@ -53,7 +52,6 @@ export const ADDITIONS = new Map<string, string[][]>([
   // ["给", [["見開三B侵入", "交付；送与"]]],
   // ["給", [["見開三B侵入", "交付；送与"]]],
   ["打", [["端開二庚上", "撞击；敲打"]]],
-  ["最", [["精合三脂去", "居于首要"]]],
   ["怎", [["章開三侵上", "代词 表示疑问"]]],
   ["做", [["精開一歌去", "制作；创作"]]],
   ["完", [["影合二刪平", "完結、全部"]]],
