@@ -1,6 +1,6 @@
 {
   "name": "tshet-uinh-autoderiver",
-  "version": "10.0.0",
+  "version": "11.0.0",
   "description": "An automatic tool to generate derivatives of the Qieyun phonological system",
   "private": true,
   "type": "module",
