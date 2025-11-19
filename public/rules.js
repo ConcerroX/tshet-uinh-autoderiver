@@ -502,6 +502,22 @@ function nml2(ret) {
       chyun: "chun",
       chio: "cheo",
 
+      zhyuen: "zhiuen",
+      zhyuet: "zhiuet",
+      zhyut: "zhuet",
+      zhyuk: "zhuek",
+      zhyu: "zhue",
+      zhyun: "zhun",
+      zhio: "zheo",
+
+      shyuen: "shiuen",
+      shyuet: "shiuet",
+      shyut: "shuet",
+      shyuk: "shuek",
+      shyu: "shue",
+      shyun: "shun",
+      shio: "sheo",
+
       chyie: "chye",
       chyien: "chyen",
       chyiem: "chyem",
@@ -516,6 +532,7 @@ function nml2(ret) {
       chyiau: "chyau",
       chyiang: "chyang",
       chyieu: "chyeu",
+      chyio: "chyo",
       chyiok: "chyok",
       chyiung: "chyung",
 
