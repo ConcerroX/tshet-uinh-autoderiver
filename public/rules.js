@@ -518,6 +518,10 @@ function nml2(ret) {
       shyun: "shun",
       shio: "sheo",
 
+      rhyuen: "rhiuen",
+      rhyuet: "rhiuet",
+      rhyun: "rhiun",
+
       chyie: "chye",
       chyien: "chyen",
       chyiem: "chyem",
