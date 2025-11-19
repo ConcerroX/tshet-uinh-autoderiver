@@ -520,7 +520,6 @@ function nml2(ret) {
 
       rhyuen: "rhiuen",
       rhyuet: "rhiuet",
-      rhyun: "rhiun",
 
       chyie: "chye",
       chyien: "chyen",
