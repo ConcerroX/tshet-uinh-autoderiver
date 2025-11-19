@@ -139,6 +139,13 @@ export const MODIFICATIONS = new Map<string, (string | Modification)[][]>([
   ["染", [["日開三鹽上", modify("RH", "AM", "上")], ["日開三鹽去", modify("RH", "AM", "去")]]],
   ["稔", [["日開三侵上", modify("RH", "EM", "上")]]],
   ["腍", [["日開三侵上", modify("RH", "EM", "上")]]],
+
+  ["傷", [["書開三陽平", modify("SH", "IANG", "陰平")], ["書開三陽去", modify("SH", "IANG", "去")]]],
+  ["殤", [["書開三陽平", modify("SH", "IANG", "陰平")]]],
+  ["觴", [["書開三陽平", modify("SH", "IANG", "陰平")]]],
+  ["湯", [["書開三陽平", modify("SH", "IANG", "陰平")]]],
+  ["塲", [["書開三陽平", modify("SH", "IANG", "陰平")]]],
+  ["舂", [["書三鍾平", modify("SH", "IUNG", "陰平")]]],
 ]);
 
 export const ADDITIONS = new Map<string, string[][]>([
