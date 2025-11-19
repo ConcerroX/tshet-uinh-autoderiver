@@ -224,7 +224,7 @@ function getFinalKey() {
       舒聲: {
         通攝: {
           一等: "UNG",
-          三等: { "幫組 或 日母 東韻": "UNG", "": "IUNG" },
+          三等: { "幫章組 或 日母 東韻": "UNG", "": "IUNG" },
         },
         江攝: "ONG",
         止攝: {
@@ -240,7 +240,7 @@ function getFinalKey() {
         蟹攝: {
           齊祭韻: {
             "幫組": "I",
-            "開口 或 幫組": { "見影組 或 孃母": "IEI", "莊組": "R", "章組 或 知徹澄日母": "I", "": "EI" },
+            "開口 或 幫組": { "見影組 或 孃母": "IEI", "莊組": "R", "精章組 或 知徹澄日母": "I", "": "EI" },
             "合口": { "": "UEI" },
           },
           泰韻: { 幫組: "OI", 開口: "AI", 合口: "UEI" },
@@ -290,8 +290,8 @@ function getFinalKey() {
           一等: { "幫組": "UAU", "": "AU" },
         },
         果攝: {
-          歌韻: { "開口 或 幫組": "O", "合口": "UO" },
-          戈韻: { 開口: "IE", 合口: "YUE" },
+          一二等: { "開口 或 幫組": "O", "合口": "UO" },
+          三等: { "開口 或 幫組": "IE", 合口: "YUE" },
         },
         假攝: {
           二等: { "開口 或 幫組": { "見影組": "IA", "": "A" }, "合口": "UA" },
@@ -301,7 +301,7 @@ function getFinalKey() {
           一等: { 幫組: "ANG", 開口: "ANG", 合口: "UANG" },
           三等: {
             幫組: "ANG",
-            開口: { "莊組": "UANG", "": "IANG" },
+            開口: { "莊組": "UANG", "章組": "ANG", "": "IANG" },
             合口: "YUANG",
           },
         },
@@ -332,7 +332,7 @@ function getFinalKey() {
           一等: "UK",
           三等: { "幫組": "UK", "": "YUK" },
         },
-        江攝: { "幫組": "OK", "莊章組 或 知徹澄日母": "UOK", "": "IOK" },
+        江攝: { "幫莊章組 或 知徹澄日母": "OK", "": "IOK" },
         臻攝: {
           真韻: {
             "開口 或 幫組": { [捲舌]: "RT", "": "IT" },
@@ -452,7 +452,6 @@ function nml(ret) {
     [/^hu([aeo])/, "hw$1"],
     [/^ngu([aeo])/, "ngw$1"],
     [/^r([iy])/, "rh$1"],
-    // [/^([bpmfv]?)ung$/, "$1ong"],
 
     [/^i$/, "yi"],
     [/^in$/, "yin"],
@@ -461,7 +460,8 @@ function nml(ret) {
     [/^ip$/, "yip"],
     [/^it$/, "yit"],
     [/^ik$/, "yik"],
-    // [/^iu$/, "you"],
+    [/^iu$/, "yiu"],
+    [/^iou$/, "yiu"],
     [/^i/, "y"],
     [/^u$/, "wu"],
     [/^ut$/, "wut"],
@@ -469,7 +469,7 @@ function nml(ret) {
     [/^ung/, "ung"],
     [/^u/, "w"],
     [/^nyy/, "ny"],
-    [/^chyyu(.+)/, "chyu$1"],
+    // [/^chyyu(.+)/, "chyu$1"],
   ].forEach(([o, n]) => {
     ret = ret.replace(o, n);
   });
@@ -493,6 +493,43 @@ function nml2(ret) {
       puei: "pui",
       muei: "mui",
       tzz: "tz",
+
+      chyuen: "chiuen",
+      chyuet: "chiuet",
+      chyut: "chuet",
+      chyuk: "chuek",
+      chyu: "chue",
+      chyun: "chun",
+      chio: "cheo",
+
+      chyie: "chye",
+      chyien: "chyen",
+      chyiem: "chyem",
+      chyiep: "chyep",
+      chyiet: "chyet",
+
+      chyia: "chya",
+      chyiam: "chyam",
+      chyian: "chyan",
+      chyiap: "chyap",
+      chyiat: "chyat",
+      chyiau: "chyau",
+      chyiang: "chyang",
+      chyieu: "chyeu",
+      chyiok: "chyok",
+      chyiung: "chyung",
+
+      chyyueng: "chyueng",
+      chyyuan: "chyuan",
+      chyyu: "chyu",
+      chyyun: "chyun",
+      chyyue: "chyue",
+      chyyuet: "chyuet",
+      chyyuek: "chyuek",
+      chyyuok: "chyuok",
+      chyyuang: "chyuang",
+      chyyuk: "chyuk",
+
       chyiei: "chiei",
       chyiai: "chiai",
       chyiou: "chiou",
@@ -516,7 +553,7 @@ function build(initialKey, finalKey, toneKey) {
       ret = ret.substring(0, splitI) + toneData[5] + ret.substring(splitI);
     }
   }
-  if (選項.標調方式 !== "附標") {
+  if (選項.標調方式 !== "不標") {
     ret += toneStr;
   }
   return ret;
